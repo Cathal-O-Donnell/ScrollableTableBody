@@ -1,45 +1,43 @@
-/*
-  TODO::
-    - Need to check if th is bigger than td
-    - responsive test
-*/
-
-// DOM Ready
+// DOM Ready.
 (function() {
   scrollTableColumnWidth();
 })();
 
-// Window resize
+// Window resize.
 $(window).resize(function() {
   scrollTableColumnWidth();
 });
 
+// Set heading cells width equal to its coresponding table column width for all tables with the 'scrollTable' class.
 function scrollTableColumnWidth() {
-  let tableHeadingCellArr = [],
-    tableBodyRows = [];
+  let cell,
+    tableArr = [],
+    tableBodyWidth = 0,
+    tableHeadingCellArr,
+    totalWidth;
 
-  // Get table heading cells
-  $('.scrollTable').find('th').each(function(i, el) {
-    tableHeadingCellArr.push(this);
-  });
+  tableArr = document.getElementsByClassName('scrollTable');
 
-  // Get table body rows
-  $('.tbodyHeaderFixed').find('tr').each(function(i, el) {
-    tableBodyRows.push(this);
-  });
+  // Loop through all scrollable tables and correct the th widths.
+  for (let tableIndex = 0; tableIndex < tableArr.length; tableIndex++) {
+    tableHeadingCellArr = [];
+    totalWidth = 0;
 
-  for (let i = 0; i < tableHeadingCellArr.length - 1; i++) {
-    let columnMaxWidth = 0,
-      rowCellArr = [];
+    // Get heading cells for current table.
+    $(tableArr[tableIndex]).find('th').each(function(i, el) {
+      tableHeadingCellArr.push(this);
+    });
 
-    for (let x = 0; x <= tableBodyRows.length; x++) {
-      let cell = $('.scrollTable tr').eq(x).find('td').eq(i);
+    // Set heading cell width.
+    for (let i = 0; i < tableHeadingCellArr.length - 1; i++) {
+      cell = $(tableArr[tableIndex]).find('tr:last').find('td').eq(i);
 
-      if ($(cell).outerWidth(true) > columnMaxWidth) {
-        columnMaxWidth = ($(cell).outerWidth(true));
-      }
+      $(tableHeadingCellArr[i]).outerWidth($(cell).outerWidth(true));
+      totalWidth += $(cell).outerWidth(true);
     }
 
-    $(tableHeadingCellArr[i]).outerWidth(columnMaxWidth);
+    // Set last table heading cell width equal to remaining width, this will 'house' the scrollbar.
+    tableBodyWidth = $(tableArr[tableIndex]).find('tbody').outerWidth(true);
+    $(tableHeadingCellArr[tableHeadingCellArr.length - 1]).outerWidth(tableBodyWidth - totalWidth);
   }
 }
