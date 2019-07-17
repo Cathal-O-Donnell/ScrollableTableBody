@@ -8,15 +8,16 @@ $(window).resize(function() {
   scrollTableColumnWidth();
 });
 
-// Set heading cells width equal to its coresponding table column width for all tables with the 'scrollTable' class.
+/*
+ * This function will set heading cells width equal to its coresponding table column width
+ * for all tables with the 'scrollTable' class.
+ */
 function scrollTableColumnWidth() {
   let cell,
-    tableArr = [],
-    tableBodyWidth = 0,
+    tableArr = document.getElementsByClassName('scrollTable'),
+    tableBodyWidth,
     tableHeadingCellArr,
     totalWidth;
-
-  tableArr = document.getElementsByClassName('scrollTable');
 
   // Loop through all scrollable tables and correct the th widths.
   for (let tableIndex = 0; tableIndex < tableArr.length; tableIndex++) {
@@ -28,7 +29,7 @@ function scrollTableColumnWidth() {
       tableHeadingCellArr.push(this);
     });
 
-    // Set heading cell width.
+    // Set heading cell width for all heading cells in table except last.
     for (let i = 0; i < tableHeadingCellArr.length - 1; i++) {
       cell = $(tableArr[tableIndex]).find('tr:last').find('td').eq(i);
 
@@ -36,7 +37,10 @@ function scrollTableColumnWidth() {
       totalWidth += $(cell).outerWidth(true);
     }
 
-    // Set last table heading cell width equal to remaining width, this will 'house' the scrollbar.
+    /*
+     * Set last table heading cell width equal to remaining width
+     * (table body width - sum of rest heading cells), this will 'house' the scrollbar.
+     */
     tableBodyWidth = $(tableArr[tableIndex]).find('tbody').outerWidth(true);
     $(tableHeadingCellArr[tableHeadingCellArr.length - 1]).outerWidth(tableBodyWidth - totalWidth);
   }
